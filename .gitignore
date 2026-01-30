@@ -1,0 +1,15 @@
+# Python virtual environments
+poi_env/
+labeling_env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# ML artifacts
+runs/
+*.pt
+
+# Data folder
+data/
