@@ -170,64 +170,64 @@
 
 
 
-# server image dev
-import os
-import cv2
-import shutil
-from utils.image_loader import load_images
-from pipeline.signboard_detector import SignboardDetector
-from utils.image_utils import resize_for_display
+# # server image dev
+# import os
+# import cv2
+# import shutil
+# from utils.image_loader import load_images
+# from pipeline.signboard_detector import SignboardDetector
+# from utils.image_utils import resize_for_display
 
-SERVER_IMAGE_PATH = r"\\10.10.2.101\team_backup\Nithin\raw_images"
+# SERVER_IMAGE_PATH = r"\\10.10.2.101\team_backup\Nithin\raw_images"
 
-detector = SignboardDetector()
+# detector = SignboardDetector()
 
-POI_DIR = os.path.join(SERVER_IMAGE_PATH, "poi")
-NON_POI_DIR = os.path.join(SERVER_IMAGE_PATH, "non_poi")
+# POI_DIR = os.path.join(SERVER_IMAGE_PATH, "poi")
+# NON_POI_DIR = os.path.join(SERVER_IMAGE_PATH, "non_poi")
 
-os.makedirs(POI_DIR, exist_ok=True)
-os.makedirs(NON_POI_DIR, exist_ok=True)
+# os.makedirs(POI_DIR, exist_ok=True)
+# os.makedirs(NON_POI_DIR, exist_ok=True)
 
-image_paths = load_images(SERVER_IMAGE_PATH)
+# image_paths = load_images(SERVER_IMAGE_PATH)
 
-for idx, path in enumerate(image_paths):
-    img = cv2.imread(path)
-    if img is None:
-        continue
+# for idx, path in enumerate(image_paths):
+#     img = cv2.imread(path)
+#     if img is None:
+#         continue
 
-    image_name = os.path.basename(path)
+#     image_name = os.path.basename(path)
 
-    detections = detector.detect(img)
+#     detections = detector.detect(img)
 
-    # ---- IMAGE LEVEL DECISION ----
-    strong = [d for d in detections if d["conf"] >= detector.strong_conf]
-    medium = [d for d in detections if detector.medium_conf <= d["conf"] < detector.strong_conf]
+#     # ---- IMAGE LEVEL DECISION ----
+#     strong = [d for d in detections if d["conf"] >= detector.strong_conf]
+#     medium = [d for d in detections if detector.medium_conf <= d["conf"] < detector.strong_conf]
 
-    if len(strong) >= 1 or len(medium) >= 2:
-        category = "poi"
-        dest_dir = POI_DIR
-    else:
-        category = "non_poi"
-        dest_dir = NON_POI_DIR
+#     if len(strong) >= 1 or len(medium) >= 2:
+#         category = "poi"
+#         dest_dir = POI_DIR
+#     else:
+#         category = "non_poi"
+#         dest_dir = NON_POI_DIR
 
-    # ---- MOVE ORIGINAL IMAGE ----
-    dest_path = os.path.join(dest_dir, image_name)
+#     # ---- MOVE ORIGINAL IMAGE ----
+#     dest_path = os.path.join(dest_dir, image_name)
 
-    if not os.path.exists(dest_path):
-        shutil.move(path, dest_path)
+#     if not os.path.exists(dest_path):
+#         shutil.move(path, dest_path)
 
-    # ---- OPTIONAL DISPLAY ----
-    debug_img = img.copy()
-    for d in detections:
-        if d["conf"] >= detector.medium_conf:
-            x1, y1, x2, y2 = d["box"]
-            cv2.rectangle(debug_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+#     # ---- OPTIONAL DISPLAY ----
+#     debug_img = img.copy()
+#     for d in detections:
+#         if d["conf"] >= detector.medium_conf:
+#             x1, y1, x2, y2 = d["box"]
+#             cv2.rectangle(debug_img, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-    display = resize_for_display(debug_img, 800, 600)
-    cv2.imshow("POI Classification", display)
-    cv2.waitKey(1)
+#     display = resize_for_display(debug_img, 800, 600)
+#     cv2.imshow("POI Classification", display)
+#     cv2.waitKey(1)
 
-    if idx % 100 == 0:
-        print(f"[{idx}] {image_name} → {category.upper()}")
+#     if idx % 100 == 0:
+#         print(f"[{idx}] {image_name} → {category.upper()}")
 
-cv2.destroyAllWindows()
+# cv2.destroyAllWindows()

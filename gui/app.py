@@ -1,126 +1,3 @@
-# import os
-# import sys
-# import threading
-# import cv2
-# import shutil          # ✅ ADD THIS
-# import tkinter as tk
-# from tkinter import filedialog, ttk, messagebox
-
-
-# # Fix imports
-# ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# sys.path.insert(0, ROOT)
-
-# from utils.image_loader import load_images
-# from pipeline.signboard_detector import SignboardDetector
-
-# detector = SignboardDetector()
-
-# OUTPUT_POI = "output/poi"
-# OUTPUT_NON_POI = "output/non_poi"
-
-# os.makedirs(OUTPUT_POI, exist_ok=True)
-# os.makedirs(OUTPUT_NON_POI, exist_ok=True)
-
-
-# class App(tk.Tk):
-#     def __init__(self):
-#         super().__init__()
-
-#         self.title("POI Signboard Detector")
-#         self.geometry("500x300")
-#         self.resizable(False, False)
-
-#         self.input_folder = tk.StringVar()
-
-#         self.create_widgets()
-
-#     def create_widgets(self):
-#         tk.Label(self, text="Input Image Folder").pack(pady=10)
-
-#         frame = tk.Frame(self)
-#         frame.pack()
-
-#         tk.Entry(frame, textvariable=self.input_folder, width=40).pack(side=tk.LEFT, padx=5)
-#         tk.Button(frame, text="Browse", command=self.browse).pack(side=tk.LEFT)
-
-#         self.start_btn = tk.Button(self, text="Start Detection", command=self.start)
-#         self.start_btn.pack(pady=15)
-
-#         self.progress = ttk.Progressbar(self, length=400, mode="determinate")
-#         self.progress.pack(pady=10)
-
-#         self.status = tk.Label(self, text="")
-#         self.status.pack()
-
-#     def browse(self):
-#         folder = filedialog.askdirectory()
-#         if folder:
-#             self.input_folder.set(folder)
-
-#     def start(self):
-#         if not self.input_folder.get():
-#             messagebox.showerror("Error", "Select input folder")
-#             return
-
-#         self.start_btn.config(state=tk.DISABLED)
-#         threading.Thread(target=self.process_images, daemon=True).start()
-
-#     def process_images(self):
-#         input_dir = self.input_folder.get()
-
-#         POI_DIR = os.path.join(input_dir, "poi")
-#         NON_POI_DIR = os.path.join(input_dir, "non_poi")
-
-#         os.makedirs(POI_DIR, exist_ok=True)
-#         os.makedirs(NON_POI_DIR, exist_ok=True)
-
-#         images = load_images(input_dir)
-#         total = len(images)
-
-#         if total == 0:
-#             messagebox.showerror("Error", "No images found")
-#             return
-
-#         self.progress["maximum"] = total
-
-#         for idx, img_path in enumerate(images, 1):
-#             img = cv2.imread(img_path)
-#             if img is None:
-#                 continue
-
-#             filename = os.path.basename(img_path)
-
-#             detections = detector.detect(img)
-
-#             strong = [d for d in detections if d["conf"] >= detector.strong_conf]
-#             medium = [d for d in detections if detector.medium_conf <= d["conf"] < detector.strong_conf]
-
-#             if len(strong) >= 1 or len(medium) >= 2:
-#                 dest_dir = POI_DIR
-#             else:
-#                 dest_dir = NON_POI_DIR
-
-#             dest_path = os.path.join(dest_dir, filename)
-
-#             if not os.path.exists(dest_path):
-#                 shutil.move(img_path, dest_path)
-
-#             self.progress["value"] = idx
-#             self.status.config(text=f"Processing {idx}/{total}")
-#             self.update_idletasks()
-
-#         self.status.config(text="Completed ✅")
-#         self.start_btn.config(state=tk.NORMAL)
-#         messagebox.showinfo("Done", "Processing completed")
-
-
-# if __name__ == "__main__":
-#     app = App()
-#     app.mainloop()
-
-
-
 import os
 import sys
 import threading
@@ -145,7 +22,7 @@ class App(tk.Tk):
         super().__init__()
 
         self.title("POI Signboard Detector")
-        self.geometry("550x400")
+        self.geometry("550x440")
         self.resizable(False, False)
         
         # Configure style
@@ -198,7 +75,7 @@ class App(tk.Tk):
         action_frame.pack(side=tk.RIGHT)
         
         # Refresh button with icon
-        refresh_btn = tk.Button(action_frame, text="↻", 
+        refresh_btn = tk.Button(action_frame, text="Refresh", 
                                command=self.refresh_folders,
                                font=('Arial', 10, 'bold'),
                                bg='#3498db', fg='white',
@@ -206,11 +83,11 @@ class App(tk.Tk):
                                activeforeground='white',
                                relief=tk.RAISED,
                                cursor='hand2',
-                               width=3)
+                               width=6)
         refresh_btn.pack(side=tk.LEFT, padx=2)
         
         # Clear button
-        clear_btn = tk.Button(action_frame, text="✕", 
+        clear_btn = tk.Button(action_frame, text="Clear", 
                              command=self.clear_selection,
                              font=('Arial', 10),
                              bg='#95a5a6', fg='white',
@@ -218,7 +95,7 @@ class App(tk.Tk):
                              activeforeground='white',
                              relief=tk.RAISED,
                              cursor='hand2',
-                             width=3)
+                             width=4)
         clear_btn.pack(side=tk.LEFT, padx=2)
         
         # Folder dropdown section
@@ -241,7 +118,7 @@ class App(tk.Tk):
                                                anchor=tk.W)
         self.selected_folder_display.pack(fill=tk.X)
         
-        # Control Buttons Section - Moved UP before progress bar
+        # Control Buttons Section
         control_frame = tk.Frame(main_container, bg='#f5f5f5')
         control_frame.pack(fill=tk.X, pady=(10, 10))
         
@@ -254,8 +131,8 @@ class App(tk.Tk):
                                   activeforeground='white',
                                   relief=tk.RAISED,
                                   cursor='hand2',
-                                  width=20,
-                                  height=2)
+                                  width=18,
+                                  height=1)
         self.start_btn.pack(side=tk.LEFT, padx=(0, 10))
         
         # Stop button with warning color (initially disabled)
@@ -268,8 +145,8 @@ class App(tk.Tk):
                                  relief=tk.RAISED,
                                  cursor='hand2',
                                  state=tk.DISABLED,
-                                 width=20,
-                                 height=2)
+                                 width=18,
+                                 height=1)
         self.stop_btn.pack(side=tk.LEFT)
         
         # Progress Bar Section
@@ -292,11 +169,21 @@ class App(tk.Tk):
                                     bg='#f5f5f5', fg='#2c3e50')
         self.status_label.pack(pady=(5, 0))
         
-        # Current folder label
-        self.current_folder_label = tk.Label(progress_frame, text="", 
-                                            font=('Arial', 9),
-                                            bg='#f5f5f5', fg='#7f8c8d')
-        self.current_folder_label.pack(pady=(2, 0))
+        # Current folder info section - UPDATED
+        folder_info_frame = tk.Frame(progress_frame, bg='#f5f5f5')
+        folder_info_frame.pack(fill=tk.X, pady=(5, 0))
+        
+        tk.Label(folder_info_frame, text="Processing:", 
+                font=('Arial', 9, 'bold'), bg='#f5f5f5', fg='#2c3e50').pack(side=tk.LEFT)
+        
+        # CURRENT NESTED FOLDER DISPLAY - More prominent
+        self.current_folder_display = tk.Label(folder_info_frame, text="None", 
+                                             font=('Arial', 9, 'bold'),
+                                             bg='#f5f5f5', fg='#e67e22',  # Orange color
+                                             anchor=tk.W,
+                                             width=45,
+                                             wraplength=400)  # Allow text wrapping
+        self.current_folder_display.pack(side=tk.LEFT, padx=(5, 0))
         
         # Footer
         footer_frame = tk.Frame(self, bg='#ecf0f1', height=30)
@@ -316,7 +203,7 @@ class App(tk.Tk):
         self.status_label.config(text="Ready", fg='#2c3e50')
         self.progress["value"] = 0
         self.progress_label.config(text="0%")
-        self.current_folder_label.config(text="")
+        self.current_folder_display.config(text="None", fg='#7f8c8d')
         self.total_images = 0
         self.processed_images = 0
 
@@ -388,7 +275,7 @@ class App(tk.Tk):
         self.total_images = 0
         self.processed_images = 0
         self.status_label.config(text="Starting...", fg='#3498db')
-        self.current_folder_label.config(text="")
+        self.current_folder_display.config(text=f"{selected_folder}/...", fg='#e67e22')
         
         # Create full path to selected folder
         folder_to_process = os.path.join(self.input_folder.get(), selected_folder)
@@ -458,14 +345,35 @@ class App(tk.Tk):
             if self.stop_flag:
                 break
                 
-            # Show relative path from start folder
+            # Get the relative path from the main selected folder
             try:
                 rel_path = folder.relative_to(main_dir)
-                display_name = str(rel_path) if str(rel_path) != '.' else main_dir.name
-            except:
-                display_name = folder.name
+                # Convert to string and show the actual nested folder path
+                folder_display = str(rel_path)
+                if folder_display == '.':
+                    folder_display = "(main folder)"
+                else:
+                    folder_display = f"{folder_display}"
                 
-            self.after(0, lambda name=display_name: self.current_folder_label.config(text=f"Current: {name}"))
+                # Update current folder display with the nested folder path
+                self.after(0, lambda f=folder_display: self.current_folder_display.config(
+                    text=f"{self.selected_folder.get()}/{f}" if f != "(main folder)" 
+                    else f"{self.selected_folder.get()}/",
+                    fg='#e67e22'))
+                
+                # Also update status for more detail
+                self.after(0, lambda f=folder_display: self.status_label.config(
+                    text=f"Processing: {self.selected_folder.get()}/{f}" if f != "(main folder)"
+                    else f"Processing: {self.selected_folder.get()}/",
+                    fg='#3498db'))
+                    
+            except Exception as e:
+                # Fallback if relative path fails
+                folder_display = folder.name
+                self.after(0, lambda f=folder_display: self.current_folder_display.config(
+                    text=f"{self.selected_folder.get()}/.../{f}",
+                    fg='#e67e22'))
+            
             self.update_idletasks()
             
             images_processed = self.process_folder(folder, processed_images)
@@ -479,7 +387,7 @@ class App(tk.Tk):
         
         if not self.stop_flag:
             self.after(0, lambda: self.status_label.config(text="Completed successfully! ✅", fg='#27ae60'))
-            self.after(0, lambda: self.current_folder_label.config(text=""))
+            self.after(0, lambda: self.current_folder_display.config(text="Completed", fg='#27ae60'))
             messagebox.showinfo("Processing Complete", 
                               f"Successfully processed '{self.selected_folder.get()}'\n\n"
                               f"Total images: {processed_images}")
@@ -490,7 +398,6 @@ class App(tk.Tk):
         self.processing = False
         self.after(0, lambda: self.start_btn.config(state=tk.NORMAL, bg='#27ae60'))
         self.after(0, lambda: self.stop_btn.config(state=tk.DISABLED))
-        self.after(0, lambda: self.current_folder_label.config(text=""))
 
     def process_folder(self, folder_path, processed_so_far):
         """Process a single folder, segregating images into poi/non_poi subfolders"""
@@ -545,8 +452,6 @@ class App(tk.Tk):
             
             # Update progress every image for smooth progress
             self.after(0, lambda c=current_total, t=self.total_images: self.update_progress(c, t))
-            self.after(0, lambda c=current_total, t=self.total_images: 
-                      self.status_label.config(text=f"Processing: {c}/{t} images"))
         
         return processed_in_folder
 
