@@ -40,7 +40,7 @@ class POIDetectorApp(tk.Tk):
     def __init__(self):
         super().__init__()
         
-        self.title("POI Signboard Detector")
+        self.title("DT - Signboard Detector")
         self.geometry("550x520")  # Increased height for checkbox
         self.resizable(False, False)
         self.configure(bg=self.COLOR_BG)
@@ -81,7 +81,7 @@ class POIDetectorApp(tk.Tk):
         
         tk.Label(
             header,
-            text="POI Signboard Detector",
+            text="DT - Signboard Detector",
             font=('Arial', 16, 'bold'),
             bg=self.COLOR_PRIMARY,
             fg='white'
