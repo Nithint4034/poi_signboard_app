@@ -41,7 +41,7 @@ class POIDetectorApp(tk.Tk):
         super().__init__()
         
         self.title("DT - Signboard Detector")
-        self.geometry("550x520")  # Increased height for checkbox
+        self.geometry("550x540")  # Increased height for checkbox
         self.resizable(False, False)
         self.configure(bg=self.COLOR_BG)
         
@@ -306,7 +306,7 @@ class POIDetectorApp(tk.Tk):
         
         tk.Label(
             footer,
-            text="POI Detection System v2.0 - Frame Validation",
+            text="POI Detection System v0.0.2 - Frame Validation",
             font=('Arial', 8),
             bg=self.COLOR_LIGHT_BG,
             fg=self.COLOR_TEXT_MUTED
